@@ -48,8 +48,7 @@ tidak konsisten.
 
 # Hasil
 Hasil uji model menggunakan data uji ditampilkan pada confusion matrix dan ROC 
-![Confusion Matrix](confusion matrix uji.png) 
-![ROC](ROC uji.png)
+...
 
 # Kesimpulan
 ....
