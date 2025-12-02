@@ -1,60 +1,104 @@
-# Pendahuluan
-Penelitian ini bertujuan untuk menerapkan dan mengevaluasi performa arsitektur CNN + Bidirectional LSTM (BiLSTM) dalam tugas deteksi video deepfake menggunakan dataset UADFV. Fokus penelitian berada pada klasifikasi dua kelas, yaitu asli dan palsu, melalui proses preprocessing dan ekstraksi fitur dari frame video.
-Eksperimen ini dilakukan untuk menjawab kebutuhan akan metode deteksi deepfake yang lebih akurat, mengingat meningkatnya penyalahgunaan teknologi generatif dalam bentuk manipulasi wajah dan video. Penelitian ini juga bertujuan meningkatkan hasil dari studi sebelumnya dengan memanfaatkan kombinasi CNN dan BiLSTM, serta mengevaluasi performa model menggunakan metrik accuracy, precision, recall, dan F1-score.
-Hasil penelitian diharapkan dapat memberikan kontribusi dalam pengembangan sistem deteksi deepfake yang lebih efektif pada konteks cybersecurity dan digital forensics, serta menjadi referensi bagi penelitian lanjutan terkait deteksi video palsu.
+# 🕵️‍♂️ Deepfake Video Detection using Hybrid CNN + Bi-LSTM
 
-# Landasan Teori
-....
+![Deepfake Detection Banner](https://img.shields.io/badge/Deepfake-Detection-red?style=for-the-badge&logo=security)
+![Python](https://img.shields.io/badge/Python-3.8%2B-blue?style=for-the-badge&logo=python)
 
-# Metodologi Riset
-Metodologi pada penelitian ini adalah sebagai berikut 
+> **Implementasi arsitektur Hybrid Convolutional Neural Network (CNN) dan Bidirectional Long Short-Term Memory (Bi-LSTM) untuk mendeteksi video manipulasi wajah (Deepfake) pada dataset UADFV.**
 
-## Dataset
-Pada penelitian ini, dataset yang digunakan berupa dataset UADV, yang terdiri dari 98 video yang dubedakan menjadi 2 kelas yaitu kelas asli dan kelas fake
+---
 
-## Preprocessing
-1. Mengekstrak setiap video menjadi 30 frame menggunakan openCV. 
-2. Mendeteksi wajah dari setiap frame yang telah didapatkan menggunakan haar cascade
-3. Memotong bagian wajah dan mengganti ukuran menjadi 96x96
-4. Membagi dataset menjadi 3 dengan ukuran sebanyak 60% dari keseluruhan data digunakan sebagai training, sebanyak 20% keseluruhan data digunakan untuk validasi dan sisanya akan digunakan sebagai testing.
-5. Melakukan augmentasi pada data training dengan cara flip, rotasi, zoom, dan contrast
+## 📖 Pendahuluan
 
-## Model
-Model yang kami gunakan berupa CNN+BiLSTM, dimana metode CNN akan digunakan untuk mengekstraksi fitur dari setiap frame citra dan bilstm akan digunakan untuk proses pembelajaran dan klasifikasi dengan memperhatikan pergerakan yang tidak natural dan
-tidak konsisten.
+Penelitian ini bertujuan untuk menerapkan dan mengevaluasi performa arsitektur **Hybrid CNN + Bidirectional LSTM (Bi-LSTM)** dalam tugas deteksi video *deepfake* menggunakan dataset **UADFV**. Fokus utama penelitian adalah klasifikasi biner (video asli vs. palsu) melalui proses *preprocessing* video yang sistematis dan ekstraksi fitur spatiotemporal.
+
+Eksperimen ini dilakukan untuk menjawab kebutuhan akan metode deteksi *deepfake* yang lebih akurat dan *robust*, mengingat meningkatnya ancaman penyalahgunaan teknologi generatif (GANs) untuk manipulasi wajah. Penelitian ini berupaya meningkatkan hasil studi terdahulu dengan menggabungkan kemampuan ekstraksi fitur visual dari CNN dan pemahaman konteks temporal dari Bi-LSTM.
+
+---
+
+## 📚 Landasan Teori
+
+Ancaman teknologi *deepfake* terhadap integritas informasi digital telah mendorong pengembangan metode deteksi yang canggih. Penelitian awal oleh **Yang et al. (2019)** berfokus pada inkonsistensi fisik seperti pose kepala (*head poses*). Namun, seiring evolusi teknik manipulasi yang semakin halus, pendekatan *hybrid* yang menggabungkan analisis spasial dan temporal menjadi standar baru.
+
+Dalam arsitektur ini:
+* **CNN (Convolutional Neural Network):** Berfungsi sebagai pengekstraksi fitur spasial yang kuat dari setiap frame video. Kami menggunakan varian **EfficientNetV2B0** yang telah terbukti efektif dalam menangkap detail visual mikro.
+* **Bi-LSTM (Bidirectional LSTM):** Digunakan untuk memproses urutan fitur antar-frame guna mendeteksi inkonsistensi temporal (seperti kedipan mata yang tidak wajar atau *jitter* pada wajah) yang sering terjadi pada video palsu.
+
+---
+
+## 🔬 Metodologi Riset
+
+### Dataset
+Penelitian ini menggunakan dataset **UADFV (UAlbany DeepFake Video)** yang terdiri dari total **98 video**, terbagi rata menjadi dua kelas:
+* **49 Video Asli (Real)**
+* **49 Video Palsu (Fake)**
+
+### Preprocessing
+Tahapan pra-pemrosesan data dilakukan sebagai berikut:
+1.  **Frame Extraction:** Mengekstrak setiap video menjadi **30 frame** berurutan menggunakan OpenCV.
+2.  **Face Detection:** Mendeteksi dan memotong (*crop*) area wajah (ROI) pada setiap frame menggunakan **Haar Cascade**.
+3.  **Resizing:** Mengubah ukuran citra wajah menjadi **96x96 piksel**.
+4.  **Data Splitting:** Membagi dataset dengan rasio **70% Training**, **30% Testing**.
+5.  **Augmentation:** Menerapkan augmentasi data pada *training set* (Flip, Rotasi, Zoom, Contrast) untuk mencegah *overfitting*.
 
 ### Arsitektur Model
-| Layer / Parameter        | Konfigurasi                                                 |
-| ------------------------ | ----------------------------------------------------------- |
-| Input Shape              | `(None, 30, 96, 96, 3)`                                     |
-| Feature Extractor        | `TimeDistributed(ConvNet / CNN extractor)`                  |
-| CNN Output Shape         | `(None, 30, 3, 3, 1280)`                                    |
-| Flatten Layer            | `TimeDistributed(Flatten)` → output `(None, 30, 11520)`     |
-| BiLSTM Layer 1           | `Bidirectional(LSTM, units=128)` → output `(None, 30, 256)` |
-| Batch Normalization 1    | `(None, 30, 256)`                                           |
-| BiLSTM Layer 2           | `Bidirectional(LSTM, units=64)` → output `(None, 128)`      |
-| Batch Normalization 2    | `(None, 128)`                                               |
-| Dense Layer 1            | `Dense(128)`                                                |
-| Dropout 1                | `Dropout(0.2)`                                              |
-| Dense Layer 2            | `Dense(64)`                                                 |
-| Dropout 2                | `Dropout(0.2)`                                              |
-| Output Layer             | `Dense(1, activation="sigmoid")`                            |
-| Optimizer                | Adam                                                        |
-| Loss Function            | Binary Crossentropy                                         |
-| Total Parameters         | **18,038,609**                                              |
-| Trainable Parameters     | **12,118,529**                                              |
-| Non-trainable Parameters | **5,920,080**                                               |
+Model yang diusulkan menggabungkan **CNN (EfficientNetV2B0)** sebagai *feature extractor* dan **Bi-LSTM** sebagai *sequence classifier*.
+
+| Layer / Parameter | Konfigurasi |
+| :--- | :--- |
+| **Input Shape** | `(None, 30, 96, 96, 3)` |
+| **Feature Extractor** | `TimeDistributed(EfficientNetV2B0)` |
+| **CNN Output** | `(None, 30, 3, 3, 1280)` |
+| **Flatten Layer** | `TimeDistributed(Flatten)` → Output: `(None, 30, 11520)` |
+| **Bi-LSTM 1** | `Bidirectional(LSTM, 128 units)` → Output: `(None, 30, 256)` |
+| **Bi-LSTM 2** | `Bidirectional(LSTM, 64 units)` → Output: `(None, 128)` |
+| **Dense Layers** | 128 units (ReLU) → 64 units (ReLU) |
+| **Regularization** | Dropout (0.2 - 0.6) & Batch Normalization |
+| **Output Layer** | `Dense(1, activation="sigmoid")` |
+| **Optimizer** | Adam (Learning Rate: 0.0001) |
+| **Loss Function** | Binary Crossentropy |
+| **Total Params** | **18,038,609** |
+
+---
+
+## 📊 Hasil Eksperimen
+
+Model yang diusulkan berhasil mencapai performa yang kompetitif pada dataset UADFV.
+
+### Confusion Matrix
+Berikut adalah hasil klasifikasi pada data uji:
 
 
-# Hasil
-Hasil uji model menggunakan data uji ditampilkan pada confusion matrix dan ROC 
-...
+![Confusion Matrix](https://github.com/soufi-r/CVL_Deepfake/blob/master/confusion_ROC.jpg?raw=true)
+> *Gambar 1: Confusion Matrix menunjukkan model mampu membedakan video asli dan palsu dengan tingkat kesalahan yang minim.*
 
-# Kesimpulan
-....
+### ROC Curve
+Kurva ROC menunjukkan nilai **AUC sebesar 0.898**, yang mengindikasikan kemampuan diskriminasi model yang sangat baik.
 
-# Contributor
-@abinmadani
-@Lacoshh
-@soufi-r
-@...
+
+### Perbandingan Performa
+| Model | Accuracy | Precision | Recall | F1-Score |
+| :--- | :---: | :---: | :---: | :---: |
+| **Proposed (Hybrid)** | **0.83** | **0.85** | **0.83** | **0.83** |
+| SVM (Baseline) | - | - | - | - |
+
+---
+
+## 🏁 Kesimpulan
+
+Penelitian ini berhasil mengimplementasikan arsitektur *Hybrid* CNN dan Bi-LSTM untuk deteksi *deepfake*. Integrasi **EfficientNet** untuk ekstraksi fitur spasial detail dan **Bi-LSTM** untuk analisis temporal terbukti efektif dalam menangkap anomali pada video manipulasi.
+
+Hasil evaluasi menunjukkan bahwa model mampu mencapai nilai **AUC 0.898**, mengungguli metode konvensional berbasis fitur fisik (seperti inkonsistensi pose kepala). Hal ini menegaskan bahwa pendekatan *spatio-temporal* adalah solusi yang menjanjikan untuk menghadapi ancaman *deepfake* yang semakin canggih.
+
+---
+
+## 👥 Kontributor
+
+Terima kasih kepada seluruh anggota tim yang telah berkontribusi dalam penelitian ini:
+
+- 👨‍💻 **Bintang M. M.** (@abinmadani)
+- 👨‍💻 **Dzaky N. A.** (@Lacoshh)
+- 👩‍💻 **Soufi R. I.** (@soufi-r)
+- 👨‍💻 **Muhamad A. C. F.** (@cholilfayyadl)
+
+---
+*Dibuat untuk memenuhi tugas Project Akhir Mata Kuliah Computer Vision.*
