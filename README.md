@@ -10,6 +10,7 @@
 ## Resource
 - Link Video: [Youtube](https://www.youtube.com/watch?v=s-pvREP7Bp4)
 - Link Paper: [Paper](https://drive.google.com/file/d/1QwaAVYkWJlOastN8TKKTDyIu-KrX8VNg/view?usp=sharing)
+- Link PPT: [PPT](https://docs.google.com/presentation/d/19tT9I7foQQB5jSPpdBCNGsp6X7AFpItPxi8_BlczGLc/edit?usp=sharing)
 
 ## 📖 Pendahuluan
 
