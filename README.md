@@ -7,6 +7,10 @@
 
 ---
 
+## Resource
+- Link Video: [Youtube](https://www.youtube.com/watch?v=s-pvREP7Bp4)
+- Link Paper: [Paper](https://drive.google.com/file/d/1QwaAVYkWJlOastN8TKKTDyIu-KrX8VNg/view?usp=sharing)
+
 ## 📖 Pendahuluan
 
 Penelitian ini bertujuan untuk menerapkan dan mengevaluasi performa arsitektur **Hybrid CNN + Bidirectional LSTM (Bi-LSTM)** dalam tugas deteksi video *deepfake* menggunakan dataset **UADFV**. Fokus utama penelitian adalah klasifikasi biner (video asli vs. palsu) melalui proses *preprocessing* video yang sistematis dan ekstraksi fitur spatiotemporal.
